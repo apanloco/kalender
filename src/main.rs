@@ -1,8 +1,9 @@
+mod calendar;
 mod error;
 mod faboul;
 
+use crate::calendar::{Calendar, CalendarData};
 use crate::error::Error;
-use crate::faboul::{CalendarData, Faboul};
 use axum::extract::{Path, State};
 use axum::{routing::get, Json, Router};
 use axum_macros::debug_handler;
@@ -14,7 +15,7 @@ use tracing_subscriber::filter::LevelFilter;
 
 #[derive(Clone)]
 struct AppState {
-    pub faboul: Arc<Mutex<Faboul>>
+    pub faboul: Arc<Mutex<Calendar>>,
 }
 
 #[tokio::main]
@@ -24,10 +25,12 @@ async fn main() {
         .init();
 
     let app_state = AppState {
-        faboul: Arc::new(Mutex::new(Faboul::new())),
+        faboul: Arc::new(Mutex::new(Calendar::new())),
     };
 
-    let app = Router::new().route("/:year/:month", get(handler)).with_state(app_state);
+    let app = Router::new()
+        .route("/:year/:month", get(handler))
+        .with_state(app_state);
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
 
@@ -45,7 +48,12 @@ async fn handler(
     State(app_state): State<AppState>,
 ) -> Result<Json<CalendarData>, Error> {
     info!("year: {}, month: {}", year, month);
-    let data = app_state.faboul.lock().await.get_calendar_data_for_month(year, month).await?;
+    let data = app_state
+        .faboul
+        .lock()
+        .await
+        .get_calendar_data_for_month(year, month)
+        .await?;
     info!("calendar data retrieved");
     Ok(Json(data))
 }
