@@ -92,7 +92,7 @@ pub(crate) async fn get_month_from_api(year: usize, month: usize) -> Result<Data
     // https://sholiday.faboul.se/:year/:month/:day
 
     let url = format!(
-        "https://sholiday.faboul.se/dagar/v2.1/{}/{:0>2}",
+        "http://sholiday.faboul.se/dagar/v2.1/{}/{:0>2}",
         year, month
     );
 
