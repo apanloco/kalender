@@ -1,0 +1,56 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: calendar-api
+  labels:
+    app: calendar-api
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: calendar-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: calendar-api
+  template:
+    metadata:
+      labels:
+        app: calendar-api
+    spec:
+      containers:
+        - name: calendar-api
+          image: arn.ocir.io/axiirc3u3iv6/calendar-api:latest
+          imagePullPolicy: Always
+      imagePullSecrets:
+        - name: ocirsecret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: calendar-api
+  labels:
+    app: calendar-api
+spec:
+  ports:
+    - port: 80
+      name: calendar-api
+  selector:
+    app: calendar-api
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: app-tls
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`calendar-api.akerud.se`)
+      services:
+        - name: calendar-api
+          port: 80
+  tls:
+    certResolver: le
