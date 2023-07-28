@@ -1,6 +1,7 @@
 mod calendar;
 mod error;
 mod faboul;
+mod serde_util;
 
 use crate::calendar::{Calendar, CalendarData};
 use crate::error::Error;
