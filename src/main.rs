@@ -79,6 +79,14 @@ async fn handler(
     State(app_state): State<AppState>,
 ) -> Result<Json<CalendarData>, Error> {
     info!("year: {}, month: {}", year, month);
+    // this is the lowest and highest years faboul api allows
+    // with one extra year as margin
+    if !(1903..=2998).contains(&year) {
+        return Err(Error::InvalidDate);
+    }
+    if !(1..=12).contains(&month) {
+        return Err(Error::InvalidDate);
+    }
     let data = app_state
         .faboul
         .lock()
