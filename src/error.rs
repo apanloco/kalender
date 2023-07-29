@@ -19,9 +19,7 @@ impl IntoResponse for Error {
                 (StatusCode::INTERNAL_SERVER_ERROR, format!("{:?}", e)).into_response()
             }
             Error::InvalidFaboulJson(s) => (StatusCode::INTERNAL_SERVER_ERROR, s).into_response(),
-            Error::InvalidDate => {
-                (StatusCode::INTERNAL_SERVER_ERROR, "Invalid date").into_response()
-            }
+            Error::InvalidDate => (StatusCode::BAD_REQUEST, "Invalid date").into_response(),
         }
     }
 }
