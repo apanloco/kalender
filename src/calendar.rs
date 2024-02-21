@@ -1,11 +1,13 @@
+use std::collections::hash_map::Entry;
+use std::collections::HashMap;
+
+use serde::Serialize;
+use tokio::sync::Mutex;
+use tracing::info;
+
 use crate::error::Error;
 use crate::faboul;
 use crate::faboul::Datum;
-use serde::Serialize;
-use std::collections::hash_map::Entry;
-use std::collections::HashMap;
-use tokio::sync::Mutex;
-use tracing::info;
 
 pub struct Calendar {
     cache: Mutex<HashMap<YearMonth, CalendarData>>,
@@ -34,6 +36,12 @@ impl YearMonth {
 #[derive(Serialize, Clone)]
 pub struct CalendarData {
     pub weeks: Vec<CalendarWeek>,
+    pub year: usize,
+    pub year_prev: usize,
+    pub year_next: usize,
+    pub month: usize,
+    pub month_prev: usize,
+    pub month_next: usize,
 }
 
 #[derive(Serialize, Clone)]
@@ -62,13 +70,9 @@ impl From<&Datum> for CalendarDate {
 #[derive(Serialize, Clone)]
 pub struct CalendarDay {
     pub date: CalendarDate,
-    #[serde(skip_serializing_if = "crate::serde_util::is_false")]
     pub off: bool,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub flagday: Option<String>,
-    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub name_days: Vec<String>,
 }
 
@@ -91,8 +95,24 @@ impl From<&faboul::Dag> for CalendarDay {
     }
 }
 
+fn verify_date(year: usize, month: usize) -> Result<(), Error> {
+    const MIN_YEAR: usize = 1903;
+    const MAX_YEAR: usize = 2998;
+
+    const MIN_MONTH: usize = 1;
+    const MAX_MONTH: usize = 12;
+
+    if !(MIN_YEAR..=MAX_YEAR).contains(&year) {
+        return Err(Error::InvalidDate);
+    }
+    if !(MIN_MONTH..=MAX_MONTH).contains(&month) {
+        return Err(Error::InvalidDate);
+    }
+    Ok(())
+}
+
 async fn get_needed_days_from_api(year: usize, month: usize) -> Result<Vec<faboul::Dag>, Error> {
-    let months = vec![
+    let months = [
         YearMonth::new(year, month - 1),
         YearMonth::new(year, month),
         YearMonth::new(year, month + 1),
@@ -140,6 +160,12 @@ async fn generate_calendar_data(year: usize, month: usize) -> Result<CalendarDat
 
     let mut calendar_data = CalendarData {
         weeks: Vec::with_capacity(dagar.len() / 7),
+        year,
+        year_prev: if month == 1 { year - 1 } else { year },
+        year_next: if month == 12 { year + 1 } else { year },
+        month,
+        month_prev: if month == 1 { 12 } else { month - 1 },
+        month_next: if month == 12 { 1 } else { month + 1 },
     };
 
     for week in dagar.chunks(7) {
@@ -166,6 +192,8 @@ impl Calendar {
         year: usize,
         month: usize,
     ) -> Result<CalendarData, Error> {
+        verify_date(year, month)?;
+
         let mut cache = self.cache.lock().await;
 
         let data = match cache.entry(YearMonth::new(year, month)) {
