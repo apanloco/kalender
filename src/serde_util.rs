@@ -61,10 +61,6 @@ where
     }
 }
 
-pub fn is_false(b: &bool) -> bool {
-    !(*b)
-}
-
 pub fn empty_string_is_none<'de, D>(deserializer: D) -> Result<Option<String>, D::Error>
 where
     D: Deserializer<'de>,
