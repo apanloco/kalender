@@ -1,6 +1,6 @@
-# calendar-api
+# Overview
 
-A swedish calendar-api.
+A swedish kalendar, and an API.
 
 # update tailwind css
 
