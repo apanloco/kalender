@@ -1,69 +1,68 @@
-<!--
+{#
 ██╗   ██╗███████╗ █████╗ ██████╗ 
 ╚██╗ ██╔╝██╔════╝██╔══██╗██╔══██╗
  ╚████╔╝ █████╗  ███████║██████╔╝
   ╚██╔╝  ██╔══╝  ██╔══██║██╔══██╗
    ██║   ███████╗██║  ██║██║  ██║
    ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝
--->
+#}
 <table class="w-10/12 mx-auto table-fixed mt-4 text-center">
   <thead>
     <tr>
-      <td class="">
-        {{ data.year }}
-      </td>
+      <td class="">{{ data.year }}</td>
     </tr>
   </thead>
 </table>
-<!--  
+
+{#
 ███╗   ███╗ ██████╗ ███╗   ██╗████████╗██╗  ██╗███████╗
 ████╗ ████║██╔═══██╗████╗  ██║╚══██╔══╝██║  ██║██╔════╝
 ██╔████╔██║██║   ██║██╔██╗ ██║   ██║   ███████║███████╗
 ██║╚██╔╝██║██║   ██║██║╚██╗██║   ██║   ██╔══██║╚════██║
 ██║ ╚═╝ ██║╚██████╔╝██║ ╚████║   ██║   ██║  ██║███████║
 ╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═══╝   ╚═╝   ╚═╝  ╚═╝╚══════╝ 
--->
+#}
+
 <table class="w-10/12 text-center mx-auto table-fixed mb-4 bg-gray-100">
   <thead>
     <tr>
       <td class="w-1/12 border border-gray-400">
         <a href="/{{ data.year_prev }}/{{ data.month_prev }}" class="block">&lt;</a>
       </td>
-      {% for month in months %}
-      <td class="w-3/12 {% if data.month == loop.index %} bg-blue-200 {% endif %} border border-gray-400">
+      {%- for month in months -%}
+      <td class="w-3/12 {%+ if data.month == loop.index %} bg-blue-200 {% endif +%} border border-gray-400">
         <a href="/{{ data.year }}/{{ loop.index }}" class="block">{{ month }}</a>
       </td>
-      {% endfor %}
-      
+      {%- endfor -%}
       <td class="w-1/12 border border-gray-400">
         <a href="/{{ data.year_next }}/{{ data.month_next }}" class="block">&gt;</a>
       </td>
     </tr>
   </thead>
 </table>
-<!--
+
+{#
  ██████╗ █████╗ ██╗     ███████╗███╗   ██╗██████╗  █████╗ ██████╗ 
 ██╔════╝██╔══██╗██║     ██╔════╝████╗  ██║██╔══██╗██╔══██╗██╔══██╗
 ██║     ███████║██║     █████╗  ██╔██╗ ██║██║  ██║███████║██████╔╝
 ██║     ██╔══██║██║     ██╔══╝  ██║╚██╗██║██║  ██║██╔══██║██╔══██╗
 ╚██████╗██║  ██║███████╗███████╗██║ ╚████║██████╔╝██║  ██║██║  ██║
  ╚═════╝╚═╝  ╚═╝╚══════╝╚══════╝╚═╝  ╚═══╝╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
--->
+#}
+
 <table class="w-10/12 text-center mx-auto table-fixed">
   <thead>
     <tr class="bg-gray-100">
       <td class="w-2/12 border border-gray-400">
         Vecka
       </td>
-      {% for day in days %}
-        <td class="w-5/12 border border-gray-400">
-          {{ day }}
-        </td>
-      {% endfor %}
+      {%- for day in days %}
+      <td class="w-5/12 border border-gray-400">{{ day }}</td>
+      {%- endfor -%}
     </tr>
   </thead>
   <tbody>
-    {% for week in data.weeks %}
+    {%- for week in data.weeks %}
       <tr>
         <td class="w-2/12 border border-gray-400">
           {{ week.week }}
@@ -86,12 +85,12 @@
             {% let is_today = false %}
           {% endif %}
           {% let first_day = day.date.day == 1 %}
-          <td class="p-0 w-5/12 border border-gray-400 {% if !is_same_month %} opacity-50 {% endif %} {% if day.off %} {{ d_class_off }} {% else %} {{ d_class_working }} {% endif %}">
+          <td class="p-0 w-5/12 border border-gray-400 {%+ if !is_same_month %} opacity-50 {% endif +%} {%+ if day.off %} {{ d_class_off }} {% else %} {{ d_class_working }} {% endif %}">
             <table class="w-full text-xl table-fixed">
               <tbody>
                 <tr>
                   <td class="w-1/2 p-0 text-left">
-                    <span class="ml-1 {% if is_today %} text-blue-500 {% endif %}">
+                    <span class="ml-1 {%+ if is_today %} text-blue-500 {% endif %}">
                       {% if first_day %}
                         {{ months[day.date.month - 1] }}
                       {% else %}
@@ -109,7 +108,6 @@
                 </tr>
               </tbody>
             </table>
-
             <div class="text-left font-medium whitespace-nowrap">
               {% if day.name.is_some() %}
                 <span class="ml-1">{{ day.name.as_ref().unwrap() }}</span>
