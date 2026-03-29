@@ -29,14 +29,10 @@ export function renderCalendar(container, year, month) {
 
   let html = '';
 
-  // Year header
-  html += `<table class="cal-year-header"><thead><tr><td>${data.year}</td></tr></thead></table>`;
-
-  // Month selector
+  // Month selector (desktop)
   html += '<table class="cal-month-selector"><thead><tr>';
   html += `<td class="cal-nav-arrow"><a href="#/${data.yearPrev}/${data.monthPrev}" data-nav="${data.yearPrev}/${data.monthPrev}">&lt;</a></td>`;
 
-  // Desktop: all 12 months. Mobile: just current month name.
   for (let i = 0; i < 12; i++) {
     const isCurrent = data.month === i + 1;
     html += `<td class="cal-month-cell${isCurrent ? ' cal-month-current' : ''}">`;
@@ -47,10 +43,10 @@ export function renderCalendar(container, year, month) {
   html += `<td class="cal-nav-arrow"><a href="#/${data.yearNext}/${data.monthNext}" data-nav="${data.yearNext}/${data.monthNext}">&gt;</a></td>`;
   html += '</tr></thead></table>';
 
-  // Mobile month selector (hidden on desktop)
+  // Month selector (mobile) — shows "Mars 2026"
   html += '<div class="cal-month-selector-mobile">';
   html += `<a href="#/${data.yearPrev}/${data.monthPrev}" data-nav="${data.yearPrev}/${data.monthPrev}" class="cal-mobile-arrow">&lt;</a>`;
-  html += `<span class="cal-mobile-month">${MONTHS[data.month - 1]}</span>`;
+  html += `<span class="cal-mobile-month">${MONTHS[data.month - 1]} ${data.year}</span>`;
   html += `<a href="#/${data.yearNext}/${data.monthNext}" data-nav="${data.yearNext}/${data.monthNext}" class="cal-mobile-arrow">&gt;</a>`;
   html += '</div>';
 
@@ -134,6 +130,11 @@ export function initApp(container) {
   const { year, month } = parseUrl();
   currentYear = year;
   currentMonth = month;
+
+  // Always set the hash so the year/month is visible in the URL
+  if (!window.location.hash) {
+    window.location.hash = `#/${year}/${month}`;
+  }
 
   // Render
   renderCalendar(appContainer, currentYear, currentMonth);
