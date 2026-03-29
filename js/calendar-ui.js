@@ -106,6 +106,13 @@ export function renderCalendar(container, year, month) {
 
   html += '</tbody></table>';
 
+  // Footer
+  html += '<div class="cal-footer">';
+  html += 'Kalender av Daniel &Aring;kerud';
+  html += ' &middot; <a href="https://github.com/apanloco/kalender">K&auml;llkod</a>';
+  html += ' &middot; <a href="https://github.com/sponsors/apanloco">&hearts;</a>';
+  html += '</div>';
+
   container.innerHTML = html;
 
   // Update page title
