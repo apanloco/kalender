@@ -45,13 +45,20 @@ export function renderCalendar(container, year, month) {
   }
 
   html += `<td class="cal-nav-arrow"><a href="#/${data.yearNext}/${data.monthNext}" data-nav="${data.yearNext}/${data.monthNext}">&gt;</a></td>`;
+
+  const isToday = data.year === today.year && data.month === today.month;
+  html += `<td class="cal-nav-arrow cal-today-btn${isToday ? ' cal-today-btn-disabled' : ''}"><a href="#/${today.year}/${today.month}" data-nav="${today.year}/${today.month}">&#x27F2;</a></td>`;
+
   html += '</tr></thead></table>';
 
-  // Month selector (mobile) — shows "Mars 2026"
+  // Month selector (mobile)
   html += '<div class="cal-month-selector-mobile">';
-  html += `<a href="#/${data.yearPrev}/${data.monthPrev}" data-nav="${data.yearPrev}/${data.monthPrev}" class="cal-mobile-arrow">&lt;</a>`;
   html += `<span class="cal-mobile-month">${MONTHS[data.month - 1]} ${data.year}</span>`;
+  html += '<span class="cal-mobile-nav">';
+  html += `<a href="#/${data.yearPrev}/${data.monthPrev}" data-nav="${data.yearPrev}/${data.monthPrev}" class="cal-mobile-arrow">&lt;</a>`;
   html += `<a href="#/${data.yearNext}/${data.monthNext}" data-nav="${data.yearNext}/${data.monthNext}" class="cal-mobile-arrow">&gt;</a>`;
+  html += `<a href="#/${today.year}/${today.month}" data-nav="${today.year}/${today.month}" class="cal-mobile-arrow cal-today-btn${isToday ? ' cal-today-btn-disabled' : ''}">&#x27F2;</a>`;
+  html += '</span>';
   html += '</div>';
 
   // Calendar grid
