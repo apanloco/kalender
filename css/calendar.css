@@ -1,0 +1,276 @@
+/* calendar.css — Swedish calendar styles. Vanilla CSS, no frameworks. */
+
+/* ============================================================
+   Base
+   ============================================================ */
+
+:root {
+  --cal-width: 100%;
+  --day-font-size: 0.8rem;
+  --name-font-size: 0.65rem;
+  --holiday-font-size: 0.65rem;
+  --top-font-size: 0.875rem;
+
+  --red-bg: #fecaca;       /* Tailwind red-200 */
+  --gray-bg: #f3f4f6;      /* Tailwind gray-100 */
+  --gray-bg-dark: #e5e7eb; /* Tailwind gray-200 */
+  --blue-bg: #bfdbfe;      /* Tailwind blue-200 */
+  --blue-text: #3b82f6;    /* Tailwind blue-500 */
+  --border: #9ca3af;       /* Tailwind gray-400 */
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scrollbar-gutter: stable;
+}
+
+body {
+  background: #ffffff;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-weight: 600;
+  font-size: var(--top-font-size);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ============================================================
+   Year Header
+   ============================================================ */
+
+.cal-year-header {
+  width: var(--cal-width);
+  margin: 1rem auto 0;
+  table-layout: fixed;
+  text-align: center;
+}
+
+/* ============================================================
+   Month Selector (Desktop)
+   ============================================================ */
+
+.cal-month-selector {
+  width: var(--cal-width);
+  margin: 0 auto 1rem;
+  table-layout: fixed;
+  text-align: center;
+  background: var(--gray-bg);
+  border-collapse: collapse;
+  display: none; /* hidden on mobile, shown on desktop */
+}
+
+.cal-month-selector td {
+  border: 1px solid var(--border);
+}
+
+.cal-month-selector a {
+  display: block;
+  padding: 2px 0;
+}
+
+.cal-nav-arrow {
+  width: 2.5%;
+}
+
+.cal-month-cell {
+  width: 7.67%; /* (100% - 2*4%) / 12 */
+}
+
+.cal-month-current {
+  background: var(--blue-bg);
+}
+
+/* ============================================================
+   Month Selector (Mobile)
+   ============================================================ */
+
+.cal-month-selector-mobile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: 0.5rem auto 1rem;
+  font-size: 1.25rem;
+}
+
+.cal-mobile-arrow {
+  padding: 0.25rem 0.75rem;
+  background: var(--gray-bg);
+  border: 1px solid var(--border);
+  cursor: pointer;
+}
+
+.cal-mobile-month {
+  font-weight: 700;
+  min-width: 8rem;
+  text-align: center;
+}
+
+/* ============================================================
+   Calendar Grid
+   ============================================================ */
+
+.cal-grid {
+  width: var(--cal-width);
+  margin: 0 auto;
+  table-layout: fixed;
+  text-align: center;
+  border-collapse: collapse;
+}
+
+.cal-day-header {
+  background: var(--gray-bg);
+}
+
+.cal-day-header td {
+  border: 1px solid var(--border);
+  padding: 2px 0;
+}
+
+.cal-week-col {
+  width: 4%; /* narrow week number column */
+  border: 1px solid var(--border);
+}
+
+.cal-day-col {
+  width: 13.43%; /* (100% - 6%) / 7 */
+  border: 1px solid var(--border);
+}
+
+/* Show full day names on desktop, short on mobile */
+.cal-day-full { display: none; }
+.cal-day-short { display: inline; }
+
+/* ============================================================
+   Day Cell
+   ============================================================ */
+
+.cal-day-cell {
+  border: 1px solid var(--border);
+  padding: 0;
+  vertical-align: top;
+  text-align: left;
+  font-size: var(--day-font-size);
+}
+
+/* Off-work day, same month — red background */
+.cal-off {
+  background: var(--red-bg);
+}
+
+/* Off-work day, other month — red striped */
+.cal-off-other {
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 3px,
+    rgba(0, 0, 0, 0.4) 4px,
+    transparent 5px
+  ), var(--red-bg);
+}
+
+/* Working day, other month — gray striped */
+.cal-working-other {
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 3px,
+    rgba(0, 0, 0, 0.4) 4px,
+    transparent 5px
+  ), var(--gray-bg-dark);
+}
+
+/* Other month days — reduced opacity */
+.cal-other-month {
+  opacity: 0.5;
+}
+
+/* ============================================================
+   Day Cell Contents
+   ============================================================ */
+
+.cal-day-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 4px;
+  font-size: var(--day-font-size);
+}
+
+.cal-day-num {
+  font-weight: 700;
+}
+
+.cal-spacer {
+  height: 0; /* compact on mobile */
+}
+
+.cal-today {
+  color: var(--blue-text);
+}
+
+.cal-flag {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.cal-holiday {
+  text-align: left;
+  font-weight: 400;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 4px;
+  font-size: var(--holiday-font-size);
+}
+
+.cal-namedays {
+  text-align: left;
+  font-style: italic;
+  font-weight: 400;
+  font-size: var(--name-font-size);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 4px 2px;
+}
+
+/* ============================================================
+   Desktop (>= 768px)
+   ============================================================ */
+
+@media (min-width: 768px) {
+  :root {
+    --cal-width: 83.333%;
+    --day-font-size: 1.25rem;
+    --name-font-size: 0.875rem;
+    --holiday-font-size: 1rem;
+    --top-font-size: 1rem;
+  }
+
+  .cal-month-selector {
+    display: table;
+  }
+
+  .cal-month-selector-mobile {
+    display: none;
+  }
+
+  .cal-day-full { display: inline; }
+  .cal-day-short { display: none; }
+
+  .cal-spacer {
+    height: 3rem; /* restore spacers on desktop */
+  }
+
+  .cal-flag {
+    font-size: 1.5rem;
+  }
+}

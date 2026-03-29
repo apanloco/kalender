@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Swedish Calendar — Tests</title>
+  <style>
+    body { font-family: monospace; padding: 20px; background: #1a1a2e; color: #e0e0e0; }
+    h1 { color: #fff; }
+    h2 { color: #aaa; margin-top: 2em; }
+    .pass { color: #4caf50; }
+    .fail { color: #f44336; }
+    .skip { color: #ff9800; }
+    #output { white-space: pre-wrap; line-height: 1.6; }
+    button { font-family: monospace; font-size: 14px; padding: 8px 16px; margin: 4px;
+             background: #333; color: #fff; border: 1px solid #555; cursor: pointer; }
+    button:hover { background: #444; }
+    .summary { font-size: 18px; font-weight: bold; margin-top: 1em; }
+  </style>
+</head>
+<body>
+  <h1>Swedish Calendar — Test Suite</h1>
+
+  <div>
+    <button onclick="runEngineTests()">Run Engine Tests</button>
+    <button onclick="runApiTests()">Run API Tests</button>
+    <button onclick="runFaboulTests()">Run Faboul Validation (2005-2030)</button>
+    <button onclick="runAllTests()">Run All</button>
+  </div>
+
+  <div id="output"></div>
+
+  <script type="module">
+    const output = document.getElementById('output');
+
+    function log(msg, cls) {
+      const line = document.createElement('div');
+      if (cls) line.className = cls;
+      line.textContent = msg;
+      output.appendChild(line);
+    }
+
+    // Intercept console.log/error for display
+    const origLog = console.log;
+    const origErr = console.error;
+
+    function captureConsole() {
+      console.log = (...args) => {
+        const msg = args.map(a => typeof a === 'string' ? a : JSON.stringify(a)).join(' ');
+        origLog(...args);
+        if (msg.includes('FAIL')) {
+          log(msg, 'fail');
+        } else if (msg.includes('OK') || msg.includes('passed') || msg.includes('MATCH')) {
+          log(msg, 'pass');
+        } else if (msg.includes('skipped')) {
+          log(msg, 'skip');
+        } else {
+          log(msg);
+        }
+      };
+      console.error = (...args) => {
+        const msg = args.map(a => typeof a === 'string' ? a : JSON.stringify(a)).join(' ');
+        origErr(...args);
+        log(msg, 'fail');
+      };
+    }
+
+    function restoreConsole() {
+      console.log = origLog;
+      console.error = origErr;
+    }
+
+    window.runEngineTests = async function() {
+      output.innerHTML = '<h2>Engine Tests</h2>';
+      captureConsole();
+      try {
+        // Dynamic import to re-run
+        const module = await import('./test-engine.js?' + Date.now());
+        const summary = document.createElement('div');
+        summary.className = 'summary ' + (module.failed === 0 ? 'pass' : 'fail');
+        summary.textContent = `Engine: ${module.passed} passed, ${module.failed} failed`;
+        output.appendChild(summary);
+      } catch (e) {
+        log(`Error: ${e.message}`, 'fail');
+        origErr(e);
+      }
+      restoreConsole();
+    };
+
+    window.runApiTests = async function() {
+      output.innerHTML = '<h2>API Tests</h2>';
+      captureConsole();
+      try {
+        const module = await import('./test-api.js?' + Date.now());
+        const summary = document.createElement('div');
+        summary.className = 'summary ' + (module.failed === 0 ? 'pass' : 'fail');
+        summary.textContent = `API: ${module.passed} passed, ${module.failed} failed`;
+        output.appendChild(summary);
+      } catch (e) {
+        log(`Error: ${e.message}`, 'fail');
+        origErr(e);
+      }
+      restoreConsole();
+    };
+
+    window.runFaboulTests = async function() {
+      output.innerHTML = '<h2>Faboul API Validation (2005-2030)</h2>';
+      output.innerHTML += '<div>Fetching data from sholiday.faboul.se... this may take a minute.</div>';
+      captureConsole();
+      try {
+        const module = await import('./test-against-faboul.js?' + Date.now());
+        const result = await module.runFaboulValidation(2005, 2030);
+        const summary = document.createElement('div');
+        summary.className = 'summary ' + (result.totalMismatches === 0 ? 'pass' : 'fail');
+        summary.textContent = `Faboul: ${result.totalChecked} days, ${result.totalMismatches} mismatches`;
+        output.appendChild(summary);
+      } catch (e) {
+        log(`Error: ${e.message}`, 'fail');
+        origErr(e);
+      }
+      restoreConsole();
+    };
+
+    window.runAllTests = async function() {
+      output.innerHTML = '';
+      await window.runEngineTests();
+      await window.runApiTests();
+      await window.runFaboulTests();
+    };
+  </script>
+</body>
+</html>
