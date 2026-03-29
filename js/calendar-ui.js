@@ -1,6 +1,7 @@
 // calendar-ui.js — DOM rendering, navigation, and URL routing.
 
 import { getMonth } from './calendar-api.js';
+import { VERSION } from './version.js';
 
 const MONTHS = [
   'Januari', 'Februari', 'Mars', 'April', 'Maj', 'Juni',
@@ -121,6 +122,7 @@ export function renderCalendar(container, year, month) {
   html += '<div class="cal-footer">';
   html += '<a href="https://github.com/apanloco/kalender">Daniel &Aring;kerud</a>';
   html += ' &middot; <a href="https://paypal.me/apanloco">&#9749; Donera</a>';
+  html += ` &middot; <a href="https://github.com/apanloco/kalender/commit/${VERSION}">${VERSION}</a>`;
   html += '</div>';
 
   container.innerHTML = html;
