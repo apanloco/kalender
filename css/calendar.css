@@ -253,6 +253,13 @@ a {
   color: #6b7280;
 }
 
+/* Landscape phones */
+@media (orientation: landscape) and (max-width: 1023px) {
+  .cal-footer {
+    font-size: 0.55rem;
+  }
+}
+
 /* ============================================================
    Desktop (>= 1024px)
    ============================================================ */
