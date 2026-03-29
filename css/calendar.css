@@ -233,7 +233,28 @@ a {
 }
 
 /* ============================================================
-   Desktop (>= 768px)
+   Footer
+   ============================================================ */
+
+.cal-footer {
+  text-align: center;
+  padding: 0.75rem 0;
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: #9ca3af;
+}
+
+.cal-footer a {
+  color: #9ca3af;
+  text-decoration: none;
+}
+
+.cal-footer a:hover {
+  color: #6b7280;
+}
+
+/* ============================================================
+   Desktop (>= 1024px)
    ============================================================ */
 
 @media (min-width: 1024px) {
@@ -271,25 +292,4 @@ a {
   .cal-flag {
     font-size: 1.5rem;
   }
-}
-
-/* ============================================================
-   Footer
-   ============================================================ */
-
-.cal-footer {
-  text-align: center;
-  padding: 0.75rem 0;
-  font-size: 0.7rem;
-  font-weight: 400;
-  color: #9ca3af;
-}
-
-.cal-footer a {
-  color: #9ca3af;
-  text-decoration: none;
-}
-
-.cal-footer a:hover {
-  color: #6b7280;
 }
