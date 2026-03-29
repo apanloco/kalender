@@ -47,7 +47,7 @@ export function renderCalendar(container, year, month) {
   html += `<td class="cal-nav-arrow"><a href="#/${data.yearNext}/${data.monthNext}" data-nav="${data.yearNext}/${data.monthNext}">&gt;</a></td>`;
 
   const isToday = data.year === today.year && data.month === today.month;
-  html += `<td class="cal-nav-arrow cal-today-btn${isToday ? ' cal-today-btn-disabled' : ''}"><a href="#/${today.year}/${today.month}" data-nav="${today.year}/${today.month}">&#x27F2;</a></td>`;
+  html += `<td class="cal-nav-arrow cal-today-btn${isToday ? ' cal-today-btn-disabled' : ''}"><a href="#/${today.year}/${today.month}" data-nav="${today.year}/${today.month}" title="Idag">&#x27F2;</a></td>`;
 
   html += '</tr></thead></table>';
 
