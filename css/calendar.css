@@ -58,7 +58,7 @@ a {
 
 .cal-month-selector {
   width: var(--cal-width);
-  margin: 0 auto;
+  margin: 0 auto 0.25rem;
   table-layout: fixed;
   text-align: center;
   background: var(--gray-bg);
@@ -96,7 +96,7 @@ a {
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  margin: 0.5rem auto 0;
+  margin: 0.5rem auto 0.25rem;
   font-size: 1.25rem;
 }
 
