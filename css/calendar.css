@@ -76,6 +76,10 @@ a {
   background: var(--blue-bg);
 }
 
+.cal-month-now {
+  box-shadow: inset 0 -3px 0 var(--blue-bg);
+}
+
 /* ============================================================
    Month Selector (Mobile)
    ============================================================ */

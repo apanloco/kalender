@@ -34,8 +34,12 @@ export function renderCalendar(container, year, month) {
   html += `<td class="cal-nav-arrow"><a href="#/${data.yearPrev}/${data.monthPrev}" data-nav="${data.yearPrev}/${data.monthPrev}">&lt;</a></td>`;
 
   for (let i = 0; i < 12; i++) {
-    const isCurrent = data.month === i + 1;
-    html += `<td class="cal-month-cell${isCurrent ? ' cal-month-current' : ''}">`;
+    const isSelected = data.month === i + 1;
+    const isNowMonth = data.year === today.year && today.month === i + 1;
+    let cls = 'cal-month-cell';
+    if (isSelected) cls += ' cal-month-current';
+    if (isNowMonth) cls += ' cal-month-now';
+    html += `<td class="${cls}">`;
     html += `<a href="#/${data.year}/${i + 1}" data-nav="${data.year}/${i + 1}">${MONTHS[i]}</a>`;
     html += '</td>';
   }
