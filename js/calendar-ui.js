@@ -174,8 +174,9 @@ export function initApp(container) {
     renderCalendar(appContainer, currentYear, currentMonth);
   });
 
-  // Keyboard navigation
+  // Keyboard navigation (plain arrows only, not Alt/Ctrl/Meta)
   document.addEventListener('keydown', (e) => {
+    if (e.altKey || e.ctrlKey || e.metaKey) return;
     if (e.key === 'ArrowLeft') {
       e.preventDefault();
       navigatePrev();
