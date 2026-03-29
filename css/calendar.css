@@ -137,6 +137,7 @@ a {
 .cal-week-col {
   width: 4%; /* narrow week number column */
   border: 1px solid var(--border);
+  font-size: 0.7rem;
 }
 
 .cal-day-col {
@@ -246,7 +247,7 @@ a {
    Desktop (>= 768px)
    ============================================================ */
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   :root {
     --cal-width: 83.333%;
     --day-font-size: 1.25rem;
@@ -268,6 +269,10 @@ a {
 
   .cal-spacer {
     height: 3rem; /* restore spacers on desktop */
+  }
+
+  .cal-week-col {
+    font-size: inherit;
   }
 
   .cal-flag {
