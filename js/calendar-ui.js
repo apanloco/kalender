@@ -145,15 +145,12 @@ let touchStartY = 0;
 export function initApp(container) {
   appContainer = container;
 
-  // Parse initial URL
+  // Parse initial URL. The current month lives at the bare URL (no hash) so
+  // that iOS home-screen bookmarks — whose URL can't be changed — always open
+  // on today's month instead of the month that was showing when bookmarked.
   const { year, month } = parseUrl();
   currentYear = year;
   currentMonth = month;
-
-  // Always set the hash so the year/month is visible in the URL
-  if (!window.location.hash) {
-    window.location.hash = `#/${year}/${month}`;
-  }
 
   // Render
   renderCalendar(appContainer, currentYear, currentMonth);
@@ -168,13 +165,11 @@ export function initApp(container) {
     }
   });
 
-  // Browser back/forward
-  window.addEventListener('hashchange', () => {
-    const { year, month } = parseUrl();
-    currentYear = year;
-    currentMonth = month;
-    renderCalendar(appContainer, currentYear, currentMonth);
-  });
+  // Browser back/forward. Both events can fire for a single history step
+  // (hashchange + popstate when moving between hash entries), so syncFromUrl
+  // guards against a redundant re-render.
+  window.addEventListener('hashchange', syncFromUrl);
+  window.addEventListener('popstate', syncFromUrl);
 
   // Keyboard navigation (plain arrows only, not Alt/Ctrl/Meta)
   document.addEventListener('keydown', (e) => {
@@ -219,10 +214,26 @@ function parseUrl() {
   return getSwedishDate();
 }
 
+function syncFromUrl() {
+  const { year, month } = parseUrl();
+  if (year === currentYear && month === currentMonth) return;
+  currentYear = year;
+  currentMonth = month;
+  renderCalendar(appContainer, year, month);
+}
+
 function navigateTo(year, month) {
   currentYear = year;
   currentMonth = month;
-  window.location.hash = `#/${year}/${month}`;
+  // The current month stays at the bare URL (no hash); every other month gets
+  // a #/year/month hash. Using pushState for both keeps a single, consistent
+  // history mechanism that back/forward drives via popstate.
+  const today = getSwedishDate();
+  const isToday = year === today.year && month === today.month;
+  const url = isToday
+    ? window.location.pathname + window.location.search
+    : `#/${year}/${month}`;
+  history.pushState(null, '', url);
   renderCalendar(appContainer, year, month);
 }
 
